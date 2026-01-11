@@ -53,6 +53,14 @@
         font-weight: bold;
     }
 
+    .pick.win {
+        background-color: #c8e6c9; /* green */
+    }
+
+    .pick.loss {
+        background-color: #ffcdd2; /* red */
+    }
+
     .champion {
         background: #ffd700;
         font-size: 18px;
@@ -105,6 +113,31 @@
 </div>
 
 <script>
+/* =============================
+   UPDATE GAME RESULTS HERE
+   ============================= */
+const results = {
+    wc: {
+        won: ["CHI", "LAR"],
+        lost: ["GB", "CAR"]
+    },
+    div: {
+        won: [],
+        lost: ["GB", "CAR"]
+    },
+    conf: {
+        won: [],
+        lost: ["GB", "CAR"]
+    },
+    champ: {
+        won: [],
+        lost: []
+    }
+};
+
+/* =============================
+   FAMILY PICKS
+   ============================= */
 const picks = {
     alex: {
         wc: ["LAC", "PIT", "BUF", "LAR", "CHI", "PHL"],
@@ -171,12 +204,23 @@ const picks = {
 const select = document.getElementById("personSelect");
 const bracket = document.getElementById("bracket");
 
-function renderRound(containerId, teams) {
+function getStatus(round, team) {
+    if (results[round]?.won.includes(team)) return "win";
+    if (results[round]?.lost.includes(team)) return "loss";
+    return "";
+}
+
+function renderRound(containerId, teams, roundKey) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
+
     teams.forEach(team => {
         const div = document.createElement("div");
         div.className = "pick";
+
+        const status = getStatus(roundKey, team);
+        if (status) div.classList.add(status);
+
         div.textContent = team;
         container.appendChild(div);
     });
@@ -192,14 +236,19 @@ select.addEventListener("change", () => {
     const data = picks[person];
     bracket.classList.remove("hidden");
 
-    renderRound("wc", data.wc);
-    renderRound("div", data.div);
-    renderRound("conf", data.conf);
+    renderRound("wc", data.wc, "wc");
+    renderRound("div", data.div, "div");
+    renderRound("conf", data.conf, "conf");
 
     const champDiv = document.getElementById("champ");
     champDiv.innerHTML = "";
+
     const champ = document.createElement("div");
     champ.className = "pick champion";
+
+    const champStatus = getStatus("champ", data.champ);
+    if (champStatus) champ.classList.add(champStatus);
+
     champ.textContent = data.champ;
     champDiv.appendChild(champ);
 });
