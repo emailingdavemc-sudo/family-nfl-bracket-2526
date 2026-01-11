@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Family NFL Playoff Picks</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    select {
+        display: block;
+        margin: 15px auto 25px auto;
+        padding: 6px 10px;
+        font-size: 16px;
+    }
+
+    .bracket {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    .round {
+        background: #fff;
+        border-radius: 6px;
+        padding: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+
+    .round h3 {
+        text-align: center;
+        margin-top: 0;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 5px;
+    }
+
+    .pick {
+        padding: 6px;
+        margin: 6px 0;
+        background: #efefef;
+        border-radius: 4px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .champion {
+        background: #ffd700;
+        font-size: 18px;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Family NFL Playoff Picks</h1>
+
+<select id="personSelect">
+    <option value="">-- Select Family Member --</option>
+    <option value="alex">Alex</option>
+    <option value="amy">Amy</option>
+    <option value="ashe">Ashe</option>
+    <option value="david">David</option>
+    <option value="ethan">Ethan</option>
+    <option value="eva">Eva</option>
+    <option value="mary">Mary</option>
+    <option value="owen">Owen</option>
+    <option value="pop">Pop</option>
+    <option value="ryan">Ryan</option>
+</select>
+
+<div id="bracket" class="bracket hidden">
+    <div class="round">
+        <h3>Wild Card</h3>
+        <div id="wc"></div>
+    </div>
+
+    <div class="round">
+        <h3>Divisional</h3>
+        <div id="div"></div>
+    </div>
+
+    <div class="round">
+        <h3>Conference</h3>
+        <div id="conf"></div>
+    </div>
+
+    <div class="round">
+        <h3>Champion</h3>
+        <div id="champ"></div>
+    </div>
+</div>
+
+<script>
+const picks = {
+    alex: {
+        wc: ["LAC", "PIT", "BUF", "LAR", "CHI", "PHL"],
+        div: ["BUF", "DEN", "SEA", "PHI"],
+        conf: ["DEN", "SEA"],
+        champ: "DEN"
+    },
+    amy: {
+        wc: ["BUF", "HOU", "NE", "GB", "PHI", "LAR"],
+        div: ["BUF", "NE", "SEA", "PHI"],
+        conf: ["SEA", "NE"],
+        champ: "SEA"
+    },
+    ashe: {
+        wc: ["HOU", "NE", "BUF", "CAR", "PHI", "CHI"],
+        div: ["NE", "BUF", "SEA", "PHI"],
+        conf: ["PHI", "BUF"],
+        champ: "PHI"
+    },
+    david: {
+        wc: ["BUF", "NE", "PIT", "LAR", "PHI", "CHI"],
+        div: ["NE", "DEN", "SEA", "CHI"],
+        conf: ["NE", "SEA"],
+        champ: "SEA"
+    },
+    ethan: {
+        wc: ["BUF", "HOU", "NE", "GB", "CAR", "PHI"],
+        div: ["BUF", "HOU", "SEA", "PHI"],
+        conf: ["BUF", "PHI"],
+        champ: "BUF"
+    },
+    eva: {
+        wc: ["LAC", "HOU", "BUF", "GB", "PHI", "CAR"],
+        div: ["BUF", "LAC", "SEA", "CAR"],
+        conf: ["BUF", "CAR"],
+        champ: "CAR"
+    },
+    mary: {
+        wc: ["HOU", "JAX", "NE", "LAR", "PHI", "CHI"],
+        div: ["DEN", "NE", "SEA", "CHI"],
+        conf: ["DEN", "SEA"],
+        champ: "DEN"
+    },
+    owen: {
+        wc: ["HOU", "JAX", "NE", "GB", "PHI", "LAR"],
+        div: ["DEN", "NE", "SEA", "LAR"],
+        conf: ["NE", "SEA"],
+        champ: "NE"
+    },
+    pop: {
+        wc: ["BUF", "HOU", "NE", "GB", "PHI", "CAR"],
+        div: ["NE", "DEN", "GB", "PHI"],
+        conf: ["NE", "GB"],
+        champ: "NE"
+    },
+    ryan: {
+        wc: ["HOU", "NE", "JAX", "GB", "PHI", "LAR"],
+        div: ["DEN", "JAX", "SEA", "LAR"],
+        conf: ["JAX", "SEA"],
+        champ: "JAX"
+    }
+};
+
+const select = document.getElementById("personSelect");
+const bracket = document.getElementById("bracket");
+
+function renderRound(containerId, teams) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    teams.forEach(team => {
+        const div = document.createElement("div");
+        div.className = "pick";
+        div.textContent = team;
+        container.appendChild(div);
+    });
+}
+
+select.addEventListener("change", () => {
+    const person = select.value;
+    if (!person) {
+        bracket.classList.add("hidden");
+        return;
+    }
+
+    const data = picks[person];
+    bracket.classList.remove("hidden");
+
+    renderRound("wc", data.wc);
+    renderRound("div", data.div);
+    renderRound("conf", data.conf);
+
+    const champDiv = document.getElementById("champ");
+    champDiv.innerHTML = "";
+    const champ = document.createElement("div");
+    champ.className = "pick champion";
+    champ.textContent = data.champ;
+    champDiv.appendChild(champ);
+});
+</script>
+
+</body>
+</html>
