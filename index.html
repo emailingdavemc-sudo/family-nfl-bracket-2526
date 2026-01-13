@@ -204,9 +204,15 @@ const picks = {
 const select = document.getElementById("personSelect");
 const bracket = document.getElementById("bracket");
 
+function normalize(team) {
+    return team.trim().toUpperCase();
+}
+
 function getStatus(round, team) {
-    if (results[round]?.won.includes(team)) return "win";
-    if (results[round]?.lost.includes(team)) return "loss";
+    const t = normalize(team);
+
+    if (results[round]?.won.map(normalize).includes(t)) return "win";
+    if (results[round]?.lost.map(normalize).includes(t)) return "loss";
     return "";
 }
 
@@ -256,6 +262,7 @@ select.addEventListener("change", () => {
 
 </body>
 </html>
+
 
 
 
